@@ -1,24 +1,27 @@
 package com.github.boliche.controllers;
 
+import com.github.boliche.forms.PlayerForm;
 import com.github.boliche.models.Player;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import com.github.boliche.services.PlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Random;
 
-@Controller
-@RequestMapping(value = "/players", produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
+@RequestMapping("/players")
 public class PlayerController {
 
+    private final PlayerService service;
+
+    @Autowired
+    public PlayerController(PlayerService service) {
+        this.service = service;
+    }
+
     @PostMapping
-    @ResponseBody
-    public Player create(){
-        return Player.builder()
-                .id(new Random().nextInt())
-                .name("Boliche")
-                .build();
+    public Player create(@Valid @RequestBody PlayerForm form){
+        return service.create(form);
     }
 }
